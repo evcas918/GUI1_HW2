@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplication Table Generator</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Dynamic Multiplication Table Generator</h1>
+    <form id="table-form">
+      <label for="start-row">Start Row:</label>
+      <input type="number" id="start-row" name="startRow" required>
+
+      <label for="end-row">End Row:</label>
+      <input type="number" id="end-row" name="endRow" required>
+
+      <label for="start-col">Start Column:</label>
+      <input type="number" id="start-col" name="startCol" required>
+
+      <label for="end-col">End Column:</label>
+      <input type="number" id="end-col" name="endCol" required>
+
+      <button type="submit">Generate Table</button>
+    </form>
+
+    <div id="error-message"></div>
+    <div id="table-container">
+      <table id="multiplication-table"></table>
+    </div>
+  </main>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      max-width: 500px;
+      margin: 0 auto 20px;
+    }
+
+    label, input {
+      display: block;
+    }
+
+    button {
+      grid-column: span 2;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #error-message {
+      color: red;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #table-container {
+      overflow: auto;
+      max-width: 100%;
+      max-height: 70vh;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    tr:first-child th {
+      position: sticky;
+      top: 0;
+    }
+
+    td:first-child {
+      background-color: #f0f0f0;
+      font-weight: bold;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f9f9f9;
+    }
+  </style>
+
+  <script>
+    document.getElementById('table-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const startRow = parseInt(document.getElementById('start-row').value);
+      const endRow = parseInt(document.getElementById('end-row').value);
+      const startCol = parseInt(document.getElementById('start-col').value);
+      const endCol = parseInt(document.getElementById('end-col').value);
+      const errorDiv = document.getElementById('error-message');
+      const table = document.getElementById('multiplication-table');
+
+      errorDiv.textContent = '';
+      table.innerHTML = '';
+
+      if (isNaN(startRow) || isNaN(endRow) || isNaN(startCol) || isNaN(endCol)) {
+        errorDiv.textContent = 'All fields must be valid numbers.';
+        return;
+      }
+      if (startRow < -50 || endRow > 50 || startCol < -50 || endCol > 50) {
+        errorDiv.textContent = 'Numbers must be between -50 and 50.';
+        return;
+      }
+      if (startRow > endRow || startCol > endCol) {
+        errorDiv.textContent = 'Start values must be less than or equal to end values.';
+        return;
+      }
+      if ((endRow - startRow + 1) * (endCol - startCol + 1) > 10000) {
+        errorDiv.textContent = 'The table is too large to render.';
+        return;
+      }
+
+      const headerRow = document.createElement('tr');
+      const emptyCell = document.createElement('th');
+      headerRow.appendChild(emptyCell);
+      for (let col = startCol; col <= endCol; col++) {
+        const th = document.createElement('th');
+        th.textContent = col;
+        headerRow.appendChild(th);
+      }
+      table.appendChild(headerRow);
+
+      for (let row = startRow; row <= endRow; row++) {
+        const tr = document.createElement('tr');
+        const th = document.createElement('td');
+        th.textContent = row;
+        tr.appendChild(th);
+
+        for (let col = startCol; col <= endCol; col++) {
+          const td = document.createElement('td');
+          td.textContent = row * col;
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+    });
+  </script>
+</body>
+</html>
